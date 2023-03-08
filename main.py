@@ -1,7 +1,7 @@
 import json
 import discord
 import re
-from youtube_dl import YoutubeDL
+from yt_dlp import YoutubeDL
 from asyncio import sleep
 import os
 from ytmusic import get_video
@@ -16,7 +16,8 @@ BASE_DIR = os.path.split(os.path.abspath(__file__))[0] + "\\"
 #TEXT_SERVER_ID = 760581470565433425
 
 YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'False'}
-FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+FFMPEG_OPTIONS = {
+    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
 
 
 def compare(r, text):  # Compare function
@@ -62,7 +63,8 @@ class Client(discord.Client):
                     with YoutubeDL(YDL_OPTIONS) as ydl:
                         info = ydl.extract_info(URL, download=False)
 
-                    url = info['formats'][0]['url']
+                    url = info['formats'][1]['url']
+                    print(info['formats'][:5])
                     vc.play(discord.FFmpegPCMAudio(executable=BASE_DIR+"ffmpeg\\ffmpeg.exe", source = url, **FFMPEG_OPTIONS))
 
                     await self.sent_message(f"Now playing: {URL}")
