@@ -12,7 +12,6 @@ from JSON import readJSON, writeJSON
 
 BASE_DIR = os.path.split(os.path.abspath(__file__))[0] + "\\"
 
-
 #TEXT_SERVER_ID = 760581470565433425
 
 YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'False'}
@@ -30,7 +29,7 @@ def compare(r, text):  # Compare function
 class Client(discord.Client):
     def __init__(self, server):
         super(Client, self).__init__()
-        self.server = server;
+        self.server = server
 
         try:
             self.playlists = readJSON(self.server)
@@ -194,7 +193,7 @@ class Client(discord.Client):
                 await self.sent_message("I know such playlists as:\n" + result)
 
         else:
-            await self.sent_message("Нихуя не понял, но очень интересно. Что бы узнать какие есть комманды введи !help.")
+            await self.sent_message("I don't know such a command. Write !help to get list of my commands.")
 
     async def sent_message(self, text):
         try:
@@ -203,16 +202,12 @@ class Client(discord.Client):
             print("[ERROR] Cannot connect to unidentified text channel.")
 
     async def on_ready(self):
-        print("Hello")
+        print("Bot started")
 
     async def on_message(self, message):
-        if (message.author != self.user and self.server == message.guild.id):
-            self.actions = {r"^!*": self.docommand} # Put here function that will execute if needed message will be received
-            self.text_channel = message.channel
-            text = message.content
-            for key, value in self.actions.items():
-                if compare(key, text):
-                        await value(message)
+        if message.author != self.user and self.server == message.guild.id:
+            if compare(r"^!*", message.content):
+                await self.docommand(message)
 
 # Getting token
 with open(PATH_TO_TOKEN, "r") as f: token = f.read()
